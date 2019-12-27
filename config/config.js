@@ -98,6 +98,12 @@ export default {
               redirect: '/welcome',
             },
             {
+              name: '工作台',
+              icon: 'smile',
+              path: '/welcome/workplace',
+              component: './workplace',
+            },
+            {
               path: '/welcome',
               name: 'welcome',
               icon: 'smile',
@@ -116,7 +122,7 @@ export default {
               path: '/articlemange',
               routes: [
                 {
-                  name: '查询表格',
+                  name: '译文管理',
                   icon: 'smile',
                   path: '/articlemange/translate',
                   component: './articlemange/translate',
@@ -126,6 +132,12 @@ export default {
                   icon: 'smile',
                   path: 'articlemange/article',
                   component: './articlemange/article',
+                },
+                {
+                  name: '标签管理',
+                  icon: 'smile',
+                  path: '/articlemange/taglist',
+                  component: './articlemange/tag',
                 },
               ],
             },
