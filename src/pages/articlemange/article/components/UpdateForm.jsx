@@ -1,5 +1,8 @@
-import { Button, DatePicker, Form, Input, Modal, Radio, Select, Steps } from 'antd';
+import { Button, DatePicker, Form, Input, message, Modal, Radio, Select, Steps } from 'antd';
 import React, { Component } from 'react';
+import Editor from '@/pages/articlemange/article/components/SingleArticle';
+import BraftEditor from 'braft-editor';
+import FileViewer from 'react-file-viewer';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -24,11 +27,22 @@ class UpdateForm extends Component {
   };
 
   constructor(props) {
+    console.log('props');
+    console.log(props);
+    console.log('props');
+
     super(props);
     this.state = {
+      editorState: BraftEditor.createEditorState(props.values.content),
+      fileId: props.values.content,
       formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
+        id: props.values.id,
+        userId: props.values.userId,
+        username: props.values.username,
+        title: props.values.title,
+
+        fileType: props.values.fileType,
+        typeName: props.values.typeName,
         key: props.values.key,
         target: '0',
         template: '0',
@@ -39,7 +53,6 @@ class UpdateForm extends Component {
       currentStep: 0,
     };
   }
-
   handleNext = currentStep => {
     const { form, onSubmit: handleUpdate } = this.props;
     const { formVals: oldValue } = this.state;
@@ -77,88 +90,13 @@ class UpdateForm extends Component {
 
   renderContent = (currentStep, formVals) => {
     const { form } = this.props;
-
+    const { editorState } = this.state;
+    const controls = [];
     if (currentStep === 1) {
-      return [
-        <FormItem key="target" {...this.formLayout} label="监控对象">
-          {form.getFieldDecorator('target', {
-            initialValue: formVals.target,
-          })(
-            <Select
-              style={{
-                width: '100%',
-              }}
-            >
-              <Option value="0">表一</Option>
-              <Option value="1">表二</Option>
-            </Select>,
-          )}
-        </FormItem>,
-        <FormItem key="template" {...this.formLayout} label="规则模板">
-          {form.getFieldDecorator('template', {
-            initialValue: formVals.template,
-          })(
-            <Select
-              style={{
-                width: '100%',
-              }}
-            >
-              <Option value="0">规则模板一</Option>
-              <Option value="1">规则模板二</Option>
-            </Select>,
-          )}
-        </FormItem>,
-        <FormItem key="type" {...this.formLayout} label="规则类型">
-          {form.getFieldDecorator('type', {
-            initialValue: formVals.type,
-          })(
-            <RadioGroup>
-              <Radio value="0">强</Radio>
-              <Radio value="1">弱</Radio>
-            </RadioGroup>,
-          )}
-        </FormItem>,
-      ];
+      return [<BraftEditor controls={controls} value={editorState} readOnly="true" />];
     }
 
-    if (currentStep === 2) {
-      return [
-        <FormItem key="time" {...this.formLayout} label="开始时间">
-          {form.getFieldDecorator('time', {
-            rules: [
-              {
-                required: true,
-                message: '请选择开始时间！',
-              },
-            ],
-          })(
-            <DatePicker
-              style={{
-                width: '100%',
-              }}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="选择开始时间"
-            />,
-          )}
-        </FormItem>,
-        <FormItem key="frequency" {...this.formLayout} label="调度周期">
-          {form.getFieldDecorator('frequency', {
-            initialValue: formVals.frequency,
-          })(
-            <Select
-              style={{
-                width: '100%',
-              }}
-            >
-              <Option value="month">月</Option>
-              <Option value="week">周</Option>
-            </Select>,
-          )}
-        </FormItem>,
-      ];
-    }
-
+    const { fileId, content } = this.state;
     return [
       <FormItem key="name" {...this.formLayout} label="规则名称">
         {form.getFieldDecorator('name', {
@@ -183,6 +121,7 @@ class UpdateForm extends Component {
           initialValue: formVals.desc,
         })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
       </FormItem>,
+      <FileViewer fileType={'docx'} filePath={'api/ceviri-kizlar/v1/file/' + fileId} />,
     ];
   };
 
@@ -244,7 +183,7 @@ class UpdateForm extends Component {
     const { currentStep, formVals } = this.state;
     return (
       <Modal
-        width={640}
+        width={840}
         bodyStyle={{
           padding: '32px 40px 48px',
         }}
@@ -264,7 +203,6 @@ class UpdateForm extends Component {
         >
           <Step title="基本信息" />
           <Step title="配置规则属性" />
-          <Step title="设定调度周期" />
         </Steps>
         {this.renderContent(currentStep, formVals)}
       </Modal>

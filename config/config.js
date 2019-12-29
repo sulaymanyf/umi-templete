@@ -130,7 +130,7 @@ export default {
                 {
                   name: '原文管理',
                   icon: 'smile',
-                  path: 'articlemange/article',
+                  path: '/articlemange/article',
                   component: './articlemange/article',
                 },
                 {
@@ -233,10 +233,20 @@ export default {
     basePath: '/',
   }, // chainWebpack: webpackPlugin,
   // proxy: {
-  //   '/server/api/': {
-  //     target: 'https://preview.pro.ant.design/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
-  //   },
-  // },
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:9000/',
+      changeOrigin: true,
+      pathRewrite: {
+        '': '',
+      },
+    },
+    '/articlemange/': {
+      target: 'http://localhost:9000/',
+      changeOrigin: true,
+      pathRewrite: {
+        'articlemange/': '',
+      },
+    },
+  },
 };

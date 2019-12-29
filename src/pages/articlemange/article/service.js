@@ -12,7 +12,7 @@ export async function removeRule(params) {
   });
 }
 export async function addRule(params) {
-  return request('/api/rule', {
+  return request('/api/ceviri-kizlar/v1/metin', {
     method: 'POST',
     data: { ...params, method: 'post' },
   });
