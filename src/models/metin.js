@@ -1,4 +1,4 @@
-import { getMetinList, getMetinTree, getMetin } from '@/services/metin';
+import { getMetinList, getMetinTree, getMetin ,getWord } from '@/services/metin';
 
 const MetinModel = {
   namespace: 'metin',
@@ -6,6 +6,7 @@ const MetinModel = {
     metins: {},
     metin: {},
     metinTree: [],
+    word:{}
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -33,6 +34,10 @@ const MetinModel = {
       console.log(action);
       return { ...state, metin: action.payload };
     },
+    setWord(state, action) {
+      console.log(action);
+      return { ...state, word: action.payload };
+    },
   },
   effects: {
     *fetch({ type, payload }, { put, call, select }) {
@@ -51,11 +56,19 @@ const MetinModel = {
         payload: response,
       });
     },
-    *getMetin({ type, payload }, { put, call, select }) {
+    *getWord({ type, payload }, { put, call, select }) {
       const response = yield call(getMetin, payload);
       console.log(response);
       yield put({
         type: 'setMetin',
+        payload: response,
+      });
+    },
+    *getMetin({ type, payload }, { put, call, select }) {
+      const response = yield call(getMetin, payload);
+      console.log(response);
+      yield put({
+        type: 'setWord',
         payload: response,
       });
     },

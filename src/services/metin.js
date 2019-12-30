@@ -18,3 +18,9 @@ export async function getMetin(id) {
     method: 'GET',
   });
 }
+  export async function getWord(id) {
+    return request('/api/ceviri-kizlar/v1/metin/' + id, {
+      method: 'GET',
+    });
+
+}

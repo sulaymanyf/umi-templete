@@ -96,12 +96,12 @@ const CreateForm = props => {
   // ];
   function beforeUpload(file) {
     console.log(file.type);
-    console.log(file.type === 'application/msword');
+    console.log(file.type === 'application/pdf');
     if (count > 1) {
       message.error('one file');
       return;
     }
-    //application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    //application/vnd.openxmlformats-officedocument.wordprocessingml.document  application/pdf
     const isJpgOrPng =
       file.type === 'application/msword' ||
       file.type === 'text/plain' ||

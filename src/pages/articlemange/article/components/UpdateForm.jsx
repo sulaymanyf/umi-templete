@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import Editor from '@/pages/articlemange/article/components/SingleArticle';
 import BraftEditor from 'braft-editor';
 import FileViewer from 'react-file-viewer';
+import Ceeditor from "@/pages/articlemange/article/components/Ceeditor";
+import TinyEdiot from "@/pages/articlemange/article/components/TinyEdiot";
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -121,9 +123,14 @@ class UpdateForm extends Component {
           initialValue: formVals.desc,
         })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
       </FormItem>,
-      <FileViewer fileType={'docx'} filePath={'api/ceviri-kizlar/v1/file/' + fileId} />,
+      <TinyEdiot id={fileId}/>
+
+
     ];
   };
+  // {/*<FileViewer fileType={'docx'} filePath={'api/ceviri-kizlar/v1/file/' + fileId} />,*/}
+  // <Ceeditor id={fileId}/>
+  // <Editor id={fileId}/>
 
   renderFooter = currentStep => {
     const { onCancel: handleUpdateModalVisible, values } = this.props;
