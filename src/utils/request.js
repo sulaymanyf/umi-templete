@@ -49,8 +49,32 @@ const errorHandler = error => {
  */
 
 const request = extend({
-  errorHandler,
-  // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  maxCache: 10, // 最大缓存个数, 超出后会自动清掉按时间最开始的一个.
+  prefix: '/api/v1', // 默认前缀
+  errorHandler, // 默认错误处理
+  credentials: 'omit', // 默认请求是否带上cookie
 });
+
+/**
+ * 请求拦截器。
+ */
+request.interceptors.request.use(async (url, options) => {
+  const token = localStorage.getItem('jwt');
+  const defaultOptions = { ...options };
+  if (token && !url.startsWith('/optimus/api/v1/auth')) {
+    defaultOptions.headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+  }
+  return {
+    url,
+    options: { ...defaultOptions },
+  };
+});
+// const request = extend({
+//   errorHandler,
+//   // 默认错误处理
+//   credentials: 'include', // 默认请求是否带上cookie
+// });
 export default request;

@@ -13,6 +13,9 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+// import { reloadAuthorized } from '@/utils/Authorized';
+// reloadAuthorized();
+
 const noMatch = (
   <Result
     status="403"
@@ -37,24 +40,12 @@ const menuDataRender = menuList =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
+    copyright="2020 ceviri kizlar"
     links={[
       {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <Icon type="github" />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
+        key: 'ceviri kizlar',
+        title: 'ceviri kizlar',
+        href: 'https://cevirikizlar.com',
         blankTarget: true,
       },
     ]}
@@ -168,6 +159,7 @@ const BasicLayout = props => {
       <Authorized authority={authorized.authority} noMatch={noMatch}>
         {children}
       </Authorized>
+      {/*<Suspense fallback={null}>{renderSettingDrawer()}</Suspense>*/}
     </ProLayout>
   );
 };

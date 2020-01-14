@@ -3,6 +3,8 @@ import router from 'umi/router';
 import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { reloadAuthorized } from '@/utils/Authorized';
+
 const Model = {
   namespace: 'login',
   state: {
@@ -11,6 +13,8 @@ const Model = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
+      // 登录之后刷新权限
+      reloadAuthorized();
       yield put({
         type: 'changeLoginStatus',
         payload: response,

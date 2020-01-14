@@ -6,6 +6,7 @@ import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import { connect } from 'dva';
 import { queryRule, updateRule, addRule, removeRule } from './service';
+import sozluk from '@/pages/articlemange/article/sozluk/sozluk';
 
 /**
  * 添加节点
@@ -97,7 +98,7 @@ const TableList = ({ metin, dispatch }) => {
   const actionRef = useRef();
   const columns = [
     {
-      title: 'ID',
+      title: 'IDss',
       dataIndex: 'id',
     },
     {
@@ -162,135 +163,138 @@ const TableList = ({ metin, dispatch }) => {
     },
   ];
   return (
-    <PageHeaderWrapper>
-      <ProTable
-        headerTitle="查询表格"
-        // actionRef={actionRef}
-        rowKey="key"
-        toolBarRender={(action, { selectedRows }) => [
-          <Button icon="plus" type="primary" onClick={() => handleModalVisible(true)}>
-            新建
-          </Button>,
-          // selectedRows && selectedRows.length > 0 && (
-          //   <Dropdown
-          //     overlay={
-          //       <Menu
-          //         onClick={async e => {
-          //           if (e.key === 'remove') {
-          //             await handleRemove(selectedRows);
-          //             action.reload();
-          //           }
-          //         }}
-          //         selectedKeys={[]}
-          //       >
-          //         <Menu.Item key="remove">批量删除</Menu.Item>
-          //         <Menu.Item key="approval">批量审批</Menu.Item>
-          //       </Menu>
-          //     }
-          //   >
-          //     <Button>
-          //       批量操作 <Icon type="down" />
-          //     </Button>
-          //   </Dropdown>
-          // ),
-        ]}
-        // tableAlertRender={
-        //   (selectedRowKeys, selectedRows) => (
-        //   <div>
-        //     已选择{' '}
-        //     <a
-        //       style={{
-        //         fontWeight: 600,
-        //       }}
-        //     >
-        //       {selectedRowKeys.length}
-        //     </a>{' '}
-        //     项&nbsp;&nbsp;
-        //     <span>
-        //       服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
-        //     </span>
-        //   </div>
-        // )
-        //}
-        // request?: (params?: {
-        //         pageSize?: number;
-        //         current?: number;
-        //         [key: string]: any;
-        //     }) => Promise<RequestData<T>>;
-        request={params => {
-          console.log('s...........');
-          var ress = null;
-          if (metin.metins.data == undefined) {
-            dispatch({
-              type: 'metin/fetch',
-              payload: params,
-            });
-          }
-          console.log(metin.metins.data);
-          console.log('s...........');
-          if (!metin.metins.flag) {
-            return null;
-          }
-          ress = metin.metins.data;
-          // var res = queryRule(params)
-          // console.log(res)
-          // return res.then((v)=>{
-          //   console.log("s...........")
-          //   console.log(v.data)
-          //   let data = v.data;
-          //   console.log("s...........")
-          const result = {
-            data: ress.records,
-            total: ress.total,
-            success: true,
-            pageSize: ress.size,
-            current: parseInt(`${params.currentPage}`, 10) || 1,
-          };
-          //   console.log(result)
-          return result;
-          // })
-        }}
-        columns={columns}
-        // rowSelection={{}}
-      />
-      <CreateForm
-        onSubmit={async value => {
-          const success = await handleAdd(value);
-
-          if (success) {
-            handleModalVisible(false);
-
-            if (actionRef.current) {
-              actionRef.current.reload();
+    <div>
+      <PageHeaderWrapper>
+        <ProTable
+          headerTitle="查询表格"
+          // actionRef={actionRef}
+          rowKey="key"
+          toolBarRender={(action, { selectedRows }) => [
+            <Button icon="plus" type="primary" onClick={() => handleModalVisible(true)}>
+              新建
+            </Button>,
+            // selectedRows && selectedRows.length > 0 && (
+            //   <Dropdown
+            //     overlay={
+            //       <Menu
+            //         onClick={async e => {
+            //           if (e.key === 'remove') {
+            //             await handleRemove(selectedRows);
+            //             action.reload();
+            //           }
+            //         }}
+            //         selectedKeys={[]}
+            //       >
+            //         <Menu.Item key="remove">批量删除</Menu.Item>
+            //         <Menu.Item key="approval">批量审批</Menu.Item>
+            //       </Menu>
+            //     }
+            //   >
+            //     <Button>
+            //       批量操作 <Icon type="down" />
+            //     </Button>
+            //   </Dropdown>
+            // ),
+          ]}
+          // tableAlertRender={
+          //   (selectedRowKeys, selectedRows) => (
+          //   <div>
+          //     已选择{' '}
+          //     <a
+          //       style={{
+          //         fontWeight: 600,
+          //       }}
+          //     >
+          //       {selectedRowKeys.length}
+          //     </a>{' '}
+          //     项&nbsp;&nbsp;
+          //     <span>
+          //       服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
+          //     </span>
+          //   </div>
+          // )
+          //}
+          // request?: (params?: {
+          //         pageSize?: number;
+          //         current?: number;
+          //         [key: string]: any;
+          //     }) => Promise<RequestData<T>>;
+          request={params => {
+            console.log('s...........');
+            var ress = null;
+            if (metin.metins.data == undefined) {
+              dispatch({
+                type: 'metin/fetch',
+                payload: params,
+              });
             }
-          }
-        }}
-        onCancel={() => handleModalVisible(false)}
-        modalVisible={createModalVisible}
-      />
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+            console.log(metin.metins.data);
+            console.log('s...........');
+            if (!metin.metins.flag) {
+              return null;
+            }
+            ress = metin.metins.data;
+            // var res = queryRule(params)
+            // console.log(res)
+            // return res.then((v)=>{
+            //   console.log("s...........")
+            //   console.log(v.data)
+            //   let data = v.data;
+            //   console.log("s...........")
+            const result = {
+              data: ress.records,
+              total: ress.total,
+              success: true,
+              pageSize: ress.size,
+              current: parseInt(`${params.currentPage}`, 10) || 1,
+            };
+            //   console.log(result)
+            return result;
+            // })
+          }}
+          columns={columns}
+          // rowSelection={{}}
+        />
+        <CreateForm
           onSubmit={async value => {
-            const success = await handleUpdate(value);
+            const success = await handleAdd(value);
 
             if (success) {
               handleModalVisible(false);
-              setStepFormValues({});
 
               if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
           }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
+          onCancel={() => handleModalVisible(false)}
+          modalVisible={createModalVisible}
         />
-      ) : null}
-    </PageHeaderWrapper>
+        {stepFormValues && Object.keys(stepFormValues).length ? (
+          <UpdateForm
+            onSubmit={async value => {
+              const success = await handleUpdate(value);
+
+              if (success) {
+                handleModalVisible(false);
+                setStepFormValues({});
+
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
+              handleUpdateModalVisible(false);
+              setStepFormValues({});
+            }}
+            updateModalVisible={updateModalVisible}
+            values={stepFormValues}
+          />
+        ) : null}
+      </PageHeaderWrapper>
+      <sozluk />
+    </div>
   );
 };
 

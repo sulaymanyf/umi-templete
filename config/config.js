@@ -178,6 +178,18 @@ export default {
               ],
             },
             {
+              name: '空白页面',
+              icon: 'smile',
+              path: '/permission',
+              component: './permission',
+            },
+            {
+              name: '空白页面',
+              icon: 'smile',
+              path: '/role',
+              component: './role',
+            },
+            {
               component: './404',
             },
           ],
@@ -233,20 +245,20 @@ export default {
     basePath: '/',
   }, // chainWebpack: webpackPlugin,
   // proxy: {
-  proxy: {
-    '/api/': {
-      target: 'http://localhost:9000/',
-      changeOrigin: true,
-      pathRewrite: {
-        '': '',
-      },
-    },
-    '/articlemange/': {
-      target: 'http://localhost:9000/',
-      changeOrigin: true,
-      pathRewrite: {
-        'articlemange/': '',
-      },
-    },
-  },
+  // proxy: {
+  //   '/api/': {
+  //     target: 'http://localhost:9000/',
+  //     changeOrigin: true,
+  //     pathRewrite: {
+  //       '': '',
+  //     },
+  //   },
+  //   '/articlemange/': {
+  //     target: 'http://localhost:9000/',
+  //     changeOrigin: true,
+  //     pathRewrite: {
+  //       'articlemange/': '',
+  //     },
+  //   },
+  // },
 };

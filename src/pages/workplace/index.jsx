@@ -1,4 +1,15 @@
-import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd';
+import {
+  Avatar,
+  Card,
+  Col,
+  Input,
+  Descriptions,
+  List,
+  Select,
+  Skeleton,
+  Row,
+  Statistic,
+} from 'antd';
 import React, { Component } from 'react';
 import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -8,6 +19,9 @@ import Radar from './components/Radar';
 import EditableLinkGroup from './components/EditableLinkGroup';
 import styles from './style.less';
 
+const InputGroup = Input.Group;
+const { Option } = Select;
+const { Search } = Input;
 const links = [
   {
     title: '操作一',
@@ -91,6 +105,17 @@ class Workplace extends Component {
     });
   }
 
+  constructor(props) {
+    //没有写props
+    super(props);
+    this.state = {
+      word: {},
+      keyWord: '',
+      searchFlag: false,
+      exlp: 'dsadada',
+    };
+  }
+
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
@@ -150,6 +175,53 @@ class Workplace extends Component {
         content={<PageHeaderContent currentUser={currentUser} />}
         extraContent={<ExtraContent />}
       >
+        <Row gutter={24} style={{ marginLeft: 0, marginRight: 0 }}>
+          <Card
+            style={{
+              marginBottom: 24,
+            }}
+            title="sozluk"
+            bordered={false}
+            loading={projectLoading}
+            bodyStyle={{
+              padding: 4,
+            }}
+          >
+            <InputGroup compact style={{ width: '50%', height: 60, marginTop: 10, marginLeft: 30 }}>
+              <Select defaultValue="en-tr" style={{ width: '16%' }}>
+                <Option value="en-tr">en</Option>
+                <Option value="tr-en">tr</Option>
+                <Option value="tr-en">zh</Option>
+              </Select>
+              {/*<Input style={{width: '50%'}} value={this.state.keyWord} onPressEnter={this.onPressEnter} onChange={this.inputChange}/>*/}
+              <Search
+                style={{ width: '50%' }}
+                value={this.state.keyWord}
+                placeholder="input search text"
+                onSearch={this.onPressEnter}
+                onChange={this.inputChange}
+                enterButton
+              />
+            </InputGroup>
+
+            {this.state.searchFlag ? (
+              <div>
+                <span
+                  onClick={this.closeWord}
+                  className={styles.close}
+                  style={{ marginTop: 10, marginRight: 10 }}
+                />
+                <Descriptions title={this.state.keyWord} style={{ marginTop: 7, marginLeft: 40 }}>
+                  <Descriptions.Item label="UserName">{this.state.word.name}</Descriptions.Item>
+                  <Descriptions.Item label="Telephone">{this.state.word.name}</Descriptions.Item>
+                  <Descriptions.Item label="Live">{this.state.word.name}</Descriptions.Item>
+                  <Descriptions.Item label="Remark">{this.state.word.name}</Descriptions.Item>
+                  <Descriptions.Item label="Address">{this.state.word.name}</Descriptions.Item>
+                </Descriptions>
+              </div>
+            ) : null}
+          </Card>
+        </Row>
         <Row gutter={24}>
           <Col xl={16} lg={24} md={24} sm={24} xs={24}>
             <Card
@@ -159,7 +231,7 @@ class Workplace extends Component {
               }}
               title="进行中的项目"
               bordered={false}
-              extra={<Link to="/">全部项目</Link>}
+              extra={<Link to="/">{this.state.exlp}</Link>}
               loading={projectLoading}
               bodyStyle={{
                 padding: 0,
@@ -264,6 +336,39 @@ class Workplace extends Component {
       </PageHeaderWrapper>
     );
   }
+
+  inputChange = e => {
+    console.log('inputChange');
+    this.setState({
+      keyWord: e.target.value,
+    });
+    // alert(e.target.value)
+  };
+
+  onPressEnter = () => {
+    console.log(this.state.keyWord === '');
+    if (this.state.keyWord === '') {
+      console.log('sssss');
+      this.setState({
+        searchFlag: false,
+      });
+      return;
+    }
+    this.setState({
+      searchFlag: true,
+      word: { name: 'word', trans: 'tarans', addr: 'adddrs' },
+    });
+    console.log('this.state.searchFlag', this.state.searchFlag);
+    this.forceUpdate();
+  };
+
+  closeWord = () => {
+    console.log('closeWord');
+    this.setState({
+      searchFlag: false,
+      keyWord: '',
+    });
+  };
 }
 
 export default connect(
