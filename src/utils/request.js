@@ -49,11 +49,46 @@ const errorHandler = error => {
  */
 
 const request = extend({
-  maxCache: 10, // 最大缓存个数, 超出后会自动清掉按时间最开始的一个.
-  prefix: '/api/v1', // 默认前缀
-  errorHandler, // 默认错误处理
-  credentials: 'omit', // 默认请求是否带上cookie
+  errorHandler,
+  // 默认错误处理
+  credentials: 'include', // 默认请求是否带上cookie
+
+  // maxCache: 10, // 最大缓存个数, 超出后会自动清掉按时间最开始的一个.
+  // prefix: '/api/v1', // 默认前缀
+  // errorHandler, // 默认错误处理
+  // credentials: 'omit', // 默认请求是否带上cookie
 });
+// request拦截器, 改变url 或 options.
+request.interceptors.request.use(async (url, options) => {
+
+  let token = localStorage.getItem("token");
+  if (token) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': token
+    };
+    return (
+      {
+        url: url,
+        options: { ...options, headers: headers },
+      }
+    );
+  } else {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': token
+    };
+    return (
+      {
+        url: url,
+        options: { ...options },
+      }
+    );
+  }
+
+})
 
 /**
  * 请求拦截器。

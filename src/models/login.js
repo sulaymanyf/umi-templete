@@ -1,10 +1,10 @@
 import { stringify } from 'querystring';
 import router from 'umi/router';
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
+import { fakeAccountLogin, getFakeCaptcha,login ,getImageCaptcha} from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
-import { reloadAuthorized } from '@/utils/Authorized';
-
+import {notification} from "antd";
+import {getWordList} from "@/services/cevir";
 const Model = {
   namespace: 'login',
   state: {
@@ -12,15 +12,14 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      // 登录之后刷新权限
-      reloadAuthorized();
+      const response = yield call(login, payload);
+      console.log(response)
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       }); // Login successfully
 
-      if (response.status === 'ok') {
+      if (response.flag) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -41,12 +40,32 @@ const Model = {
         }
 
         router.replace(redirect || '/');
+      }else {
+        notification.error({
+          message: 'Notification Title',
+          description: response.message
+        });
       }
     },
 
     *getCaptcha({ payload }, { call }) {
       yield call(getFakeCaptcha, payload);
     },
+   *getImageCaptcha({ payload ,callback}, { call }) {
+     const response =  yield call(getImageCaptcha);
+     if (response.flag === true) {
+       console.log(response)
+       console.log(typeof callback === 'function')
+       if (callback && typeof callback === 'function') {
+         console.log(response)
+         callback(response); // 返回结果
+       }
+     } else {
+       notification.error({
+         message: response.message,
+       });
+     }
+      },
 
     logout() {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
@@ -63,7 +82,10 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      console.log("changeLoginStatus",payload.data)
+
+      console.log("payload.currentAuthority",payload.currentAuthorityoad)
+      setAuthority(payload.data.token);
       return { ...state, status: payload.status, type: payload.type };
     },
   },

@@ -1,11 +1,14 @@
-import { Button, Col, Form, Input, Row } from 'antd';
-import React, { Component } from 'react';
+import {Button, Col, Form, Input, Row} from 'antd';
+import React, {Component} from 'react';
 import omit from 'omit.js';
 import ItemMap from './map';
 import LoginContext from './LoginContext';
 import styles from './index.less';
-const FormItem = Form.Item;
 
+const FormItem = Form.Item;
+import {connect} from 'dva';
+
+@connect(() => ({}))
 class WrapFormItem extends Component {
   static defaultProps = {
     getCaptchaButtonText: 'captcha',
@@ -17,15 +20,22 @@ class WrapFormItem extends Component {
     super(props);
     this.state = {
       count: 0,
+      image: ''
     };
   }
 
   componentDidMount() {
-    const { updateActive, name = '' } = this.props;
+    const {updateActive, name = '', dispatch} = this.props;
 
     if (updateActive) {
       updateActive(name);
     }
+    // this.props.dispatch({
+    //   type: 'item/save',
+    //   payload: {
+    //     filterKey: e.target.value,
+    //   },
+    // });
   }
 
   componentWillUnmount() {
@@ -33,7 +43,7 @@ class WrapFormItem extends Component {
   }
 
   onGetCaptcha = () => {
-    const { onGetCaptcha } = this.props;
+    const {onGetCaptcha} = this.props;
     const result = onGetCaptcha ? onGetCaptcha() : null;
 
     if (result === false) {
@@ -46,7 +56,11 @@ class WrapFormItem extends Component {
       this.runGetCaptchaCountDown();
     }
   };
-  getFormItemOptions = ({ onChange, defaultValue, customProps = {}, rules }) => {
+
+  onGetImage = () => {
+    this.setState({image: `api/ceviri-kizlar/code/v1/code?${Math.random()}`});
+  };
+  getFormItemOptions = ({onChange, defaultValue, customProps = {}, rules}) => {
     const options = {
       rules: rules || customProps.rules,
     };
@@ -62,7 +76,7 @@ class WrapFormItem extends Component {
     return options;
   };
   runGetCaptchaCountDown = () => {
-    const { countDown } = this.props;
+    const {countDown} = this.props;
     let count = countDown || 59;
     this.setState({
       count,
@@ -80,7 +94,7 @@ class WrapFormItem extends Component {
   };
 
   render() {
-    const { count } = this.state; // 这么写是为了防止restProps中 带入 onChange, defaultValue, rules props tabUtil
+    const {count, image} = this.state; // 这么写是为了防止restProps中 带入 onChange, defaultValue, rules props tabUtil
 
     const {
       onChange,
@@ -105,11 +119,11 @@ class WrapFormItem extends Component {
       return null;
     }
 
-    const { getFieldDecorator } = form; // get getFieldDecorator props
+    const {getFieldDecorator} = form; // get getFieldDecorator props
 
     const options = this.getFormItemOptions(this.props);
     const otherProps = restProps || {};
-
+    console.log("image", image)
     if (type === 'Captcha') {
       const inputProps = omit(otherProps, ['onGetCaptcha', 'countDown']);
       return (
@@ -127,6 +141,21 @@ class WrapFormItem extends Component {
               >
                 {count ? `${count} ${getCaptchaSecondText}` : getCaptchaButtonText}
               </Button>
+            </Col>
+          </Row>
+        </FormItem>
+      );
+    }
+    if (type === 'ImgCaptcha') {
+      const inputProps = omit(otherProps, ['onGetCaptcha', 'countDown']);
+      return (
+        <FormItem>
+          <Row gutter={8}>
+            <Col span={16}>
+              {getFieldDecorator(name, options)(<Input {...customProps} {...inputProps} />)}
+            </Col>
+            <Col span={8}>
+              <img src={image === '' ? "api/ceviri-kizlar/code/v1/code" : image} onClick={this.onGetImage}/>
             </Col>
           </Row>
         </FormItem>

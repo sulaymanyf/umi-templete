@@ -5,7 +5,7 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import LoginComponents from './components/Login';
 import styles from './style.less';
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
+const { Tab, UserName, Password, Mobile, Captcha,ImgCaptcha, Submit } = LoginComponents;
 
 class Login extends Component {
   loginForm = undefined;
@@ -132,6 +132,23 @@ class Login extends Component {
                 }
               }}
             />
+            <ImgCaptcha
+              name="captcha"
+              placeholder={formatMessage({
+                id: 'user-login.verification-code.placeholder',
+              })}
+              countDown={120}
+              onGetCaptcha={this.onGetCaptcha}
+
+              rules={[
+                {
+                  required: true,
+                  message: formatMessage({
+                    id: 'user-login.verification-code.required',
+                  }),
+                },
+              ]}
+            />
           </Tab>
           <Tab
             key="mobile"
@@ -167,28 +184,28 @@ class Login extends Component {
                 },
               ]}
             />
-            <Captcha
-              name="captcha"
-              placeholder={formatMessage({
-                id: 'user-login.verification-code.placeholder',
-              })}
-              countDown={120}
-              onGetCaptcha={this.onGetCaptcha}
-              getCaptchaButtonText={formatMessage({
-                id: 'user-login.form.get-captcha',
-              })}
-              getCaptchaSecondText={formatMessage({
-                id: 'user-login.captcha.second',
-              })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({
-                    id: 'user-login.verification-code.required',
-                  }),
-                },
-              ]}
-            />
+            {/*<Captcha*/}
+            {/*  name="captcha"*/}
+            {/*  placeholder={formatMessage({*/}
+            {/*    id: 'user-login.verification-code.placeholder',*/}
+            {/*  })}*/}
+            {/*  countDown={120}*/}
+            {/*  onGetCaptcha={this.onGetCaptcha}*/}
+            {/*  getCaptchaButtonText={formatMessage({*/}
+            {/*    id: 'user-login.form.get-captcha',*/}
+            {/*  })}*/}
+            {/*  getCaptchaSecondText={formatMessage({*/}
+            {/*    id: 'user-login.captcha.second',*/}
+            {/*  })}*/}
+            {/*  rules={[*/}
+            {/*    {*/}
+            {/*      required: true,*/}
+            {/*      message: formatMessage({*/}
+            {/*        id: 'user-login.verification-code.required',*/}
+            {/*      }),*/}
+            {/*    },*/}
+            {/*  ]}*/}
+            {/*/>*/}
           </Tab>
           <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>

@@ -1,40 +1,44 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React, { useState, useEffect, Component } from 'react';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
+import React, {useState, useEffect, Component} from 'react';
 import styles from './index.less';
-import { Table, Divider, Tag, Card, Button, Modal } from 'antd';
-import { connect } from 'dva';
+import {Table, Divider, Tag, Card, Button, Modal} from 'antd';
+import {connect} from 'dva';
 import PermissionEditor from './components/index';
 
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
 
+
+
+
+@connect(({permission, loading}) => ({permission, loading}))
 class Permission extends Component {
-  state = { visible: false };
+  state = {
+    visible: false,
+    fromValue:{},
+    data:[]
+  };
 
-  showModal = () => {
+
+  componentDidMount() {
+    const {dispatch} = this.props;
+    const { permission, loading, location } = this.props
+    const { perm } =permission
+    dispatch({
+      type: 'permission/getList',
+    });
+    console.log("componentDidMount", permission)
+  }
+
+  showModal = (obj) => {
+
+    console.log(obj.id)
     this.setState({
       visible: true,
+      fromValue:obj
+    });
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'permission/getOne',
+      payload:obj.id.toString()
     });
   };
 
@@ -43,6 +47,7 @@ class Permission extends Component {
     this.setState({
       visible: false,
     });
+
   };
 
   handleCancel = e => {
@@ -53,27 +58,31 @@ class Permission extends Component {
   };
 
   render() {
+
+    const { perm } =this.props.permission
+
+
     const columns = [
       {
         title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'menuName',
+        key: 'menuName',
         render: text => <a>{text}</a>,
       },
       {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
+        title: 'Type',
+        dataIndex: 'type',
+        key: 'type',
       },
       {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
+        title: 'Url',
+        dataIndex: 'url',
+        key: 'url',
       },
       {
         title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
+        key: 'perName',
+        dataIndex: 'perName',
         render: tags => (
           <span>
             {tags.map(tag => {
@@ -95,23 +104,24 @@ class Permission extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Divider type="vertical" />
-            <Button type="primary" size={'small'} onClick={this.showModal}>
-              {record.name}
+            <Divider type="vertical"/>
+            <Button type="primary" size={'small'} onClick={()=>{this.showModal(record)}}>
+              {record.menuName}
             </Button>
-            <Divider type="vertical" />
-            <Button type="primary" size={'small'} onClick={this.showModal}>
+            <Divider type="vertical"/>
+            <Button type="primary" size={'small'} >
               New Collection
             </Button>
           </span>
         ),
       },
     ];
-
+    //
     return (
-      <PageHeaderWrapper content="这是一个新页面，从这里进行开发！" className={styles.main}>
+      <PageHeaderWrapper  >
         <Card>
-          <Table columns={columns} dataSource={data} />
+          {/*{perm.data}*/}
+          <Table columns={columns} dataSource={perm.data} />
           <Modal
             width={800}
             title="Basic Modal"
@@ -119,7 +129,7 @@ class Permission extends Component {
             onOk={this.handleOk}
             onCancel={this.handleCancel}
           >
-            <PermissionEditor />
+            <PermissionEditor values={this.state.fromValue}/>
           </Modal>
         </Card>
       </PageHeaderWrapper>
@@ -127,4 +137,5 @@ class Permission extends Component {
   }
 }
 
-export default connect()(Permission);
+
+export default Permission;

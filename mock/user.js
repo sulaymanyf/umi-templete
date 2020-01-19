@@ -74,9 +74,102 @@ export default {
       age: 32,
       address: 'Sidney No. 1 Lake Park',
     },
-  ],
+  ],  // GET POST 可省略
+  'GET /user/getMenus': (req, res) => {
+    res.send({
+      status: 'ok',
+      routes: [
+        {
+          path: '/',
+          redirect: '/welcome',
+        },
+        {
+          name: '工作台',
+          path: '/welcome/workplace',
+          component: './workplace',
+        },
+        {
+          path: '/welcome',
+          name: 'welcome',
+          icon: 'smile',
+        },
+        {
+          path: '/admin',
+          name: 'admin',
+          icon: 'crown',
+        },
+        {
+          name: 'articlemange',
+          icon: 'smile',
+          path: '/articlemange',
+          routes: [
+            {
+              name: 'translate',
+              icon: 'smile',
+              path: '/articlemange/translate',
+            },
+            {
+              name: 'article',
+              icon: 'smile',
+              path: '/articlemange/article',
+            },
+            {
+              name: 'articleInfo',
+              icon: 'smile',
+              path: '/articlemange/article/articleInfo',
+              hideInMenu: true,
+            },
+            {
+              name: 'taglist',
+              icon: 'smile',
+              path: '/articlemange/taglist',
+            },
+          ],
+        },
+        {
+          name: 'system',
+          icon: 'setting',
+          path: '/system',
+          routes: [
+            {
+              name: 'system set',
+              icon: 'smile',
+              path: '/system/system',
+              component: './system',
+            },
+            {
+              name: 'profile',
+              icon: 'smile',
+              path: '/system/profile',
+              component: './profile',
+            },
+            {
+              name: 'userList',
+              path: '/system/userList',
+              component: './system/userList',
+            },
+          ],
+        },
+        {
+          name: '权限',
+          icon: 'smile',
+          path: '/permission',
+          component: './permission',
+        },
+        {
+          name: '角色 ',
+          icon: 'smile',
+          path: '/role',
+          component: './role',
+        },
+        {
+          component: './404',
+        },
+      ],
+    })
+  },
   'POST /api/login/account': (req, res) => {
-    const { password, userName, type } = req.body;
+    const {password, userName, type} = req.body;
 
     if (password === 'ant.design' && userName === 'admin') {
       res.send({

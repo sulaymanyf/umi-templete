@@ -1,8 +1,9 @@
 import { reloadAuthorized } from './Authorized'; // use localStorage to store the authority info, which might be sent from server in actual project.
 
 export function getAuthority(str) {
+  console.log("getAuthority",str)
   const authorityString =
-    typeof str === 'undefined' && localStorage ? localStorage.getItem('antd-pro-authority') : str; // authorityString could be admin, "admin", ["admin"]
+    typeof str === 'undefined' && localStorage ? localStorage.getItem('token') : str; // authorityString could be admin, "admin", ["admin"]
 
   let authority;
 
@@ -23,13 +24,19 @@ export function getAuthority(str) {
   //   return ['admin'];
   // }
 
-  return authority;
+  return 'admin';
 }
 export function setAuthority(authority) {
-  // const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  // localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority)); // auto reload
-  const myantdproAuthority = typeof authority === 'string' ? authority.split(',') : authority;
-  localStorage.setItem('myantdpro-authority', JSON.stringify(myantdproAuthority));
-  // auto reload
-  reloadAuthorized();
+  console.log(authority)
+  console.log(typeof authority === 'string' )
+  const proAuthority = typeof authority === 'string' ? [authority] : authority;
+  console.log(proAuthority)
+  localStorage.setItem('token', proAuthority); // auto reload
+  //
+  // // const proAuthority = typeof authority === 'string' ? [authority] : authority;
+  // // localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority)); // auto reload
+  // const myantdproAuthority = typeof authority === 'string' ? authority.split(',') : authority;
+  // localStorage.setItem('myantdpro-authority', JSON.stringify(myantdproAuthority));
+  // // auto reload
+  // reloadAuthorized();
 }

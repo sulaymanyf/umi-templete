@@ -8,3 +8,7 @@ export async function queryCurrent() {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+export async function queryMenu() {
+  return request('/api/ceviri-kizlar/user/v1/user/menu');
+}

@@ -73,131 +73,124 @@ export default {
   },
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
-    // {
-    //   path: '/user',
-    //   component: '../layouts/UserLayout',
-    //   routes: [
-    //     {
-    //       name: 'login',
-    //       path: '/user/login',
-    //       component: './user/login',
-    //     },
-    //   ],
-    // },
+    {
+      path: '/user',
+      component: '../layouts/UserLayout',
+      routes: [
+        {
+          name: 'login',
+          path: '/user/login',
+          component: './user/login',
+        },
+      ],
+    },
     {
       path: '/',
-      component: '../layouts/SecurityLayout',
+      component: '../layouts/BasicLayout',
       routes: [
         {
           path: '/',
-          component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
+          redirect: '/welcome',
+        },
+        {
+          name: '工作台',
+          icon: 'smile',
+          path: '/welcome/workplace',
+          component: './workplace',
+        },
+        {
+          path: '/welcome',
+          name: 'welcome',
+          icon: 'smile',
+          component: './Welcome',
+        },
+        {
+          path: '/admin',
+          name: 'admin',
+          icon: 'crown',
+          component: './Admin',
+        },
+        {
+          name: 'articlemange',
+          icon: 'smile',
+          path: '/articlemange',
           routes: [
             {
-              path: '/',
-              redirect: '/welcome',
-            },
-            {
-              name: '工作台',
+              name: 'translate',
               icon: 'smile',
-              path: '/welcome/workplace',
-              component: './workplace',
+              path: '/articlemange/translate',
+              component: './articlemange/translate',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
+              name: 'article',
               icon: 'smile',
-              component: './Welcome',
+              path: '/articlemange/article',
+              component: './articlemange/article',
             },
             {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-            },
-            {
-              name: '文章管理',
+              name: 'articleInfo',
               icon: 'smile',
-              path: '/articlemange',
-              routes: [
-                {
-                  name: '译文管理',
-                  icon: 'smile',
-                  path: '/articlemange/translate',
-                  component: './articlemange/translate',
-                },
-                {
-                  name: '原文管理',
-                  icon: 'smile',
-                  path: '/articlemange/article',
-                  component: './articlemange/article',
-                },
-                {
-                  name: '标签管理',
-                  icon: 'smile',
-                  path: '/articlemange/taglist',
-                  component: './articlemange/tag',
-                },
-              ],
+              path: '/articlemange/article/articleInfo',
+              component: './articlemange/article/articleInfo',
+              hideInMenu: true,
             },
             {
-              name: '系统管理',
-              icon: 'setting',
-              path: '/system',
-              routes: [
-                {
-                  name: '系统设置',
-                  icon: 'smile',
-                  path: '/system/system',
-                  component: './system',
-                },
-                {
-                  name: '个人设置',
-                  icon: 'smile',
-                  path: '/system/profile',
-                  component: './profile',
-                },
-              ],
-            },
-            {
-              name: '用户管理',
-              icon: 'user',
-              path: '/user',
-              routes: [
-                {
-                  name: 'userList',
-                  path: '/user/userList',
-                  component: './user/userList',
-                },
-                {
-                  name: 'login',
-                  path: '/user/login',
-                  component: './user/login',
-                },
-              ],
-            },
-            {
-              name: '空白页面',
+              name: 'taglist',
               icon: 'smile',
-              path: '/permission',
-              component: './permission',
-            },
-            {
-              name: '空白页面',
-              icon: 'smile',
-              path: '/role',
-              component: './role',
-            },
-            {
-              component: './404',
+              path: '/articlemange/taglist',
+              component: './articlemange/tag',
             },
           ],
+        },
+        {
+          name: 'system',
+          icon: 'setting',
+          path: '/system',
+          routes: [
+            {
+              name: 'system set',
+              icon: 'smile',
+              path: '/system/system',
+              component: './system',
+            },
+            {
+              name: 'profile',
+              icon: 'smile',
+              path: '/system/profile',
+              component: './profile',
+            },
+            {
+              name: 'userList',
+              path: '/system/userList',
+              component: './system/userList',
+            },
+          ],
+        },
+        {
+          name: '权限',
+          icon: 'smile',
+          path: '/permission',
+          component: './permission',
+        },
+        {
+          name: '角色 ',
+          icon: 'smile',
+          path: '/role',
+          component: './role',
+        },
+        {
+          name: 'menu',
+          icon: 'smile',
+          path: '/menu',
+          component: './menu',
         },
         {
           component: './404',
         },
       ],
+    },
+    {
+      component: './404',
     },
     {
       component: './404',
@@ -243,22 +236,37 @@ export default {
   },
   manifest: {
     basePath: '/',
-  }, // chainWebpack: webpackPlugin,
+  },
+  // chainWebpack: webpackPlugin,
   // proxy: {
-  // proxy: {
-  //   '/api/': {
-  //     target: 'http://localhost:9000/',
-  //     changeOrigin: true,
-  //     pathRewrite: {
-  //       '': '',
-  //     },
-  //   },
-  //   '/articlemange/': {
-  //     target: 'http://localhost:9000/',
-  //     changeOrigin: true,
-  //     pathRewrite: {
-  //       'articlemange/': '',
-  //     },
-  //   },
-  // },
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:9000/',
+      changeOrigin: true,
+      pathRewrite: {
+        '': '',
+      },
+    },
+    '/articlemange/api/': {
+      target: 'http://localhost:9000/',
+      changeOrigin: true,
+      pathRewrite: {
+        'articlemange/api/': 'api/',
+      },
+    },
+    '/articlemange/article/api/': {
+      target: 'http://localhost:9000/',
+      changeOrigin: true,
+      pathRewrite: {
+        'articlemange/article/api/': 'api/',
+      },
+    },
+    '/user/api/': {
+      target: 'http://localhost:9000/',
+      changeOrigin: true,
+      pathRewrite: {
+        'user/api/': 'api/',
+      },
+    },
+  },
 };

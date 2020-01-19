@@ -3,18 +3,16 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import ProLayout, {DefaultFooter, MenuDataItem} from '@ant-design/pro-layout';
+import React, {useEffect, useState} from 'react';
 import Link from 'umi/link';
-import { connect } from 'dva';
-import { Icon, Result, Button } from 'antd';
-import { formatMessage } from 'umi-plugin-react/locale';
+import {connect} from 'dva';
+import {Icon, Result, Button} from 'antd';
+import {formatMessage} from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
+import {isAntDesignPro, getAuthorityFromRouter} from '@/utils/utils';
 import logo from '../assets/logo.svg';
-// import { reloadAuthorized } from '@/utils/Authorized';
-// reloadAuthorized();
 
 const noMatch = (
   <Result
@@ -34,7 +32,7 @@ const noMatch = (
  */
 const menuDataRender = menuList =>
   menuList.map(item => {
-    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    const localItem = {...item, children: item.children ? menuDataRender(item.children) : []};
     return Authorized.check(item.authority, localItem, null);
   });
 
@@ -111,6 +109,40 @@ const BasicLayout = props => {
     }
   }; // get children authority
 
+  const [menuData, setMenuData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    // 这里是一个演示用法
+    // 真实项目中建议使用 dva dispatch 或者 umi-request
+    setMenuData([]);
+    setLoading(true);
+    if (dispatch) {
+      console.log("useEffect,dispatch")
+      dispatch({
+        type: 'user/fetchMenu',
+        callback: (res) => {
+          if (res) {
+            console.log(res.data);// 请求完成后返回的结果
+            setMenuData(res.data || []);
+            setLoading(false);
+          }
+        }
+
+      });
+    }
+  }, [index]);
+  // fetch('/user/getMenus')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       console.log("data.res.router.routes",data.routes)
+  //       setMenuData(data.routes|| []);
+  //       setLoading(false);
+  //     });
+  // }, [index]);
+
+
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
@@ -151,20 +183,21 @@ const BasicLayout = props => {
       }}
       footerRender={footerRender}
       menuDataRender={menuDataRender}
+      // menuDataRender={() => menuData}
       formatMessage={formatMessage}
-      rightContentRender={() => <RightContent />}
+      rightContentRender={() => <RightContent/>}
       {...props}
       {...settings}
     >
       <Authorized authority={authorized.authority} noMatch={noMatch}>
         {children}
       </Authorized>
-      {/*<Suspense fallback={null}>{renderSettingDrawer()}</Suspense>*/}
     </ProLayout>
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({global, menuData, settings}) => ({
   collapsed: global.collapsed,
+  // menuData: global.menuData,
   settings,
 }))(BasicLayout);

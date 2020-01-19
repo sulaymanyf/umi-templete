@@ -1,7 +1,56 @@
-import { Form, Input, Modal, Cascader, Upload, message, Button, Icon } from 'antd';
+import { Form, Input, Modal, Cascader, Upload, message, Button, Icon,Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { number } from 'prop-types';
+import {connect} from "dva";
 
+const { Option } = Select;
+
+class PriceInput extends React.Component {
+  handleNumberChange = e => {
+    const number = parseInt(e.target.value || 0, 10);
+    if (isNaN(number)) {
+      return;
+    }
+    this.triggerChange({ number });
+  };
+
+  handleCurrencyChange = currency => {
+    this.triggerChange({ currency });
+  };
+
+  triggerChange = changedValue => {
+    const { onChange, value } = this.props;
+    if (onChange) {
+      onChange({
+        ...value,
+        ...changedValue,
+      });
+    }
+  };
+
+  render() {
+    const { size, value } = this.props;
+    return (
+      <span>
+        <Input
+          type="text"
+          size={size}
+          value={value.number}
+          onChange={this.handleNumberChange}
+          style={{ width: '65%', marginRight: '3%' }}
+        />
+        <Select
+          value={value.currency}
+          size={size}
+          style={{ width: '32%' }}
+          onChange={this.handleCurrencyChange}
+        >
+          <Option value="try">TRY</Option>
+        </Select>
+      </span>
+    );
+  }
+}
 const FormItem = Form.Item;
 
 //return fetch(`https://api.spotify.com/v1/me`, {
@@ -13,24 +62,47 @@ const FormItem = Form.Item;
 //       console.log(userId);
 //       return userId;
 //     });
-const CreateForm = props => {
+
+function CreateForm (props) {
+
   //   function CreateForm({ metin, dispatch ,props}) {
   const { modalVisible, form, onSubmit: handleAdd, onCancel } = props;
   const [options, setOptions] = useState([]);
   const [count, setCount] = useState(1);
-  console.log(props);
+  const {
+    dispatch,
+
+  } = props;
   useEffect(() => {
-    fetch('api/ceviri-kizlar/v1/metinTypeTree')
-      .then(res => res.json())
-      .then(ress => {
-        console.log(options.length === 0);
-        // setOptions(ress.data)
-        if (options.length === 0) {
-          console.log('=======================');
-          setOptions(ress.data);
+    if (dispatch) {
+      dispatch({
+        type: 'metin/getTree',
+        callback: (res) => {
+          if (res) {
+            console.log(res.data);// 请求完成后返回的结果
+            setOptions(res.data)
+          }
         }
       });
-  });
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   this.props.dispatch({
+  //     type: 'metin/getTree'
+  //   });
+  //   fetch('api/ceviri-kizlar/metinTypeTree/v1/metinTypeTree')
+  //     .then(res => res.json())
+  //     .then(ress => {
+  //       console.log(options.length === 0);
+  //       // setOptions(ress.data)
+  //       if (options.length === 0) {
+  //         setOptions(ress.data);
+  //       }
+  //     });
+  // });
+
+
 
   // {
   //   console.log(data.json())
@@ -40,9 +112,7 @@ const CreateForm = props => {
   //     rres=v.data
   //   })
   // }
-  console.log('0------------------');
   console.log(options);
-  console.log('0------------------');
   // res.then(v=>{
   //   setOptions(v.data)
   // })
@@ -134,6 +204,12 @@ const CreateForm = props => {
       message.error(`${info.file.name} file upload failed.`);
     }
   };
+  const checkPrice = (rule, value, callback) => {
+    if (value.number > 0) {
+      return callback();
+    }
+    callback('Price must greater than zero!');
+  };
 
   return (
     <Modal
@@ -187,6 +263,20 @@ const CreateForm = props => {
         wrapperCol={{
           span: 15,
         }}
+        label="Price"
+      >
+        {form.getFieldDecorator('price', {
+          initialValue: { number: 0, currency: 'TRY' },
+          rules: [{ required: true,validator: checkPrice }],
+        })(<PriceInput />)}
+      </FormItem>
+      <FormItem
+        labelCol={{
+          span: 5,
+        }}
+        wrapperCol={{
+          span: 15,
+        }}
         label="note"
       >
         {form.getFieldDecorator('note', {
@@ -217,7 +307,7 @@ const CreateForm = props => {
           ],
         })(
           <Upload
-            action="api/ceviri-kizlar/v1/fileUpload"
+            action="api/ceviri-kizlar/file/v1/file/fileUpload"
             beforeUpload={beforeUpload}
             onChange={handleChange}
           >
@@ -230,5 +320,5 @@ const CreateForm = props => {
     </Modal>
   );
 };
-// export default connect(({ metin }) => ({ metin }))(CreateForm);
-export default Form.create()(CreateForm);
+export default connect(({ metin,props }) => ({ metin ,props}))(Form.create()(CreateForm));
+// export default Form.create()(CreateForm);

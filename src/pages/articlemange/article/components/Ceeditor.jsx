@@ -17,7 +17,7 @@ class Ceeditor extends Component {
     this.state.fileId=props.id,
     this.handleChange = this.handleChange.bind(this)
   }
-
+// Request URL: http://localhost:8000/articlemange/api/ceviri-kizlar/v1/metinTypeTree
   componentDidMount () {
     console.log(this.state.fileId)
     fetch('api/ceviri-kizlar/v1/file/'+this.state.fileId)

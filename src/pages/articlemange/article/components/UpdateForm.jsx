@@ -1,21 +1,21 @@
-import { Button, DatePicker, Form, Input, message, Modal, Radio, Select, Steps } from 'antd';
-import React, { Component } from 'react';
-import Editor from '@/pages/articlemange/article/components/SingleArticle';
+import {Button, Card, Popconfirm, Form, Input, message, Modal, Radio, Select, Steps, notification} from 'antd';
+import React, {Component} from 'react';
 import BraftEditor from 'braft-editor';
 import FileViewer from 'react-file-viewer';
-import Ceeditor from "@/pages/articlemange/article/components/Ceeditor";
-import TinyEdiot from "@/pages/articlemange/article/components/TinyEdiot";
+import {formatMessage} from "umi-plugin-react/locale";
 
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
+const {Step} = Steps;
+const {TextArea} = Input;
+const {Option} = Select;
 const RadioGroup = Radio.Group;
 
 class UpdateForm extends Component {
   static defaultProps = {
-    handleUpdate: () => {},
-    handleUpdateModalVisible: () => {},
+    handleUpdate: () => {
+    },
+    handleUpdateModalVisible: () => {
+    },
     values: {},
   };
 
@@ -36,7 +36,7 @@ class UpdateForm extends Component {
     super(props);
     this.state = {
       editorState: BraftEditor.createEditorState(props.values.content),
-      fileId: props.values.content,
+      fileId: props.values.id,
       formVals: {
         id: props.values.id,
         userId: props.values.userId,
@@ -55,12 +55,13 @@ class UpdateForm extends Component {
       currentStep: 0,
     };
   }
+
   handleNext = currentStep => {
-    const { form, onSubmit: handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
+    const {form, onSubmit: handleUpdate} = this.props;
+    const {formVals: oldValue} = this.state;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
+      const formVals = {...oldValue, ...fieldsValue};
       this.setState(
         {
           formVals,
@@ -75,30 +76,41 @@ class UpdateForm extends Component {
       );
     });
   };
-
+  onRef = (ref) => {
+    this.child = ref
+  }
   backward = () => {
-    const { currentStep } = this.state;
+    const {currentStep} = this.state;
     this.setState({
       currentStep: currentStep - 1,
     });
   };
 
   forward = () => {
-    const { currentStep } = this.state;
+    const {currentStep} = this.state;
     this.setState({
       currentStep: currentStep + 1,
     });
   };
 
+
   renderContent = (currentStep, formVals) => {
-    const { form } = this.props;
-    const { editorState } = this.state;
+    const {form} = this.props;
+    const {editorState} = this.state;
     const controls = [];
     if (currentStep === 1) {
-      return [<BraftEditor controls={controls} value={editorState} readOnly="true" />];
+      notification.warning({
+        message: 'Notification Title',
+        duration:10,
+        description: formatMessage({id :'article.mtein.notification',})
+      });
+      return [
+        <div style={{height: 600}}>
+          <FileViewer fileType={'docx'} filePath={'api/ceviri-kizlar/v1/read-file/' + this.state.fileId}/>
+        </div>];
     }
 
-    const { fileId, content } = this.state;
+    const {fileId, content} = this.state;
     return [
       <FormItem key="name" {...this.formLayout} label="规则名称">
         {form.getFieldDecorator('name', {
@@ -109,7 +121,7 @@ class UpdateForm extends Component {
             },
           ],
           initialValue: formVals.name,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入"/>)}
       </FormItem>,
       <FormItem key="desc" {...this.formLayout} label="规则描述">
         {form.getFieldDecorator('desc', {
@@ -121,31 +133,25 @@ class UpdateForm extends Component {
             },
           ],
           initialValue: formVals.desc,
-        })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+        })(<TextArea rows={4} placeholder="请输入至少五个字符"/>)}
       </FormItem>,
-      <TinyEdiot id={fileId}/>
-
-
     ];
   };
   // {/*<FileViewer fileType={'docx'} filePath={'api/ceviri-kizlar/v1/file/' + fileId} />,*/}
   // <Ceeditor id={fileId}/>
   // <Editor id={fileId}/>
+  confirm=(e)=> {
+    console.log(e);
+    // 确认原文 发送邮件
+    message.success('Click on Yes');
+  }
 
   renderFooter = currentStep => {
-    const { onCancel: handleUpdateModalVisible, values } = this.props;
+    const {onCancel: handleUpdateModalVisible, values} = this.props;
 
-    if (currentStep === 1) {
+    if (currentStep === 0) {
+      console.log(currentStep)
       return [
-        <Button
-          key="back"
-          style={{
-            float: 'left',
-          }}
-          onClick={this.backward}
-        >
-          上一步
-        </Button>,
         <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
           取消
         </Button>,
@@ -155,7 +161,8 @@ class UpdateForm extends Component {
       ];
     }
 
-    if (currentStep === 2) {
+    if (currentStep === 1) {
+      console.log(currentStep)
       return [
         <Button
           key="back"
@@ -169,9 +176,15 @@ class UpdateForm extends Component {
         <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
           取消
         </Button>,
-        <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-          完成
-        </Button>,
+        <Popconfirm
+          title={formatMessage({id :'article.mtein.confirm-message',})}
+          onConfirm={this.confirm}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button type="primary" >{formatMessage({id :'article.basic.confirm',})}</Button>
+        </Popconfirm>,
+
       ];
     }
 
@@ -186,11 +199,11 @@ class UpdateForm extends Component {
   };
 
   render() {
-    const { updateModalVisible, onCancel: handleUpdateModalVisible, values } = this.props;
-    const { currentStep, formVals } = this.state;
+    const {updateModalVisible, onCancel: handleUpdateModalVisible, values} = this.props;
+    const {currentStep, formVals} = this.state;
     return (
       <Modal
-        width={840}
+        width={"45%"}
         bodyStyle={{
           padding: '32px 40px 48px',
         }}
@@ -208,8 +221,8 @@ class UpdateForm extends Component {
           size="small"
           current={currentStep}
         >
-          <Step title="基本信息" />
-          <Step title="配置规则属性" />
+          <Step title="基本信息"/>
+          <Step title="配置规则属性"/>
         </Steps>
         {this.renderContent(currentStep, formVals)}
       </Modal>

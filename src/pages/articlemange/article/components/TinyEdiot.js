@@ -30,7 +30,11 @@ class TinyEdiot extends Component {
       });
   }
   handleEditorChange = (e) => {
-    console.log('Content was updated:', e.target.getContent());
+    console.log('Content was updated:', e.target.getBody());
+    console.log('Content was updated:', e.target.getDoc());
+    console.log('Content was updated:', e.target.getElement());
+    console.log('Content was updated:', e.target.getContent({format : 'text'}));
+    console.log('Content was updated:', e.target.getContent({format : 'html'}));
   }
   render() {
     const { text } = this.state
@@ -42,7 +46,7 @@ class TinyEdiot extends Component {
         initialValue={text}
         value={text}
         init={{
-          height: 500,
+          height: 800,
           menubar: false,
           plugins: [
             'advlist autolink lists link image charmap print preview anchor',

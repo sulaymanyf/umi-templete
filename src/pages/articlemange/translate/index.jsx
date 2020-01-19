@@ -129,6 +129,7 @@ const TableList = () => {
           <a
             onClick={() => {
               handleUpdateModalVisible(true);
+              console.log(record)
               setStepFormValues(record);
             }}
           >
@@ -217,9 +218,9 @@ const TableList = () => {
               handleModalVisible(false);
               setStepFormValues({});
 
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+              // if (actionRef.current) {
+              //   actionRef.current.reload();
+              // }
             }
           }}
           onCancel={() => {

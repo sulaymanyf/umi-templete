@@ -24,6 +24,7 @@ class UpdateForm extends Component {
   };
 
   constructor(props) {
+    console.log("props",props)
     super(props);
     this.state = {
       formVals: {
@@ -40,26 +41,27 @@ class UpdateForm extends Component {
     };
   }
 
-  handleNext = currentStep => {
-    const { form, onSubmit: handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        },
-      );
-    });
-  };
+  // handleNext = currentStep => {
+  //   const { form, onSubmit: handleUpdate } = this.props;
+  //   const { formVals: oldValue } = this.state;
+  //   form.validateFields((err, fieldsValue) => {
+  //     if (err) return;
+  //     const formVals = { ...oldValue, ...fieldsValue };
+  //     console.log("formVals",formVals)
+  //     this.setState(
+  //       {
+  //         formVals,
+  //       },
+  //       () => {
+  //         if (currentStep < 2) {
+  //           this.forward();
+  //         } else {
+  //           handleUpdate(formVals);
+  //         }
+  //       },
+  //     );
+  //   });
+  // };
 
   backward = () => {
     const { currentStep } = this.state;
