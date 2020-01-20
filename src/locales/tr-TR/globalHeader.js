@@ -1,0 +1,17 @@
+export default {
+  'component.globalHeader.search': 'Ara',
+  'component.globalHeader.search.example1': 'Örnek arama 1',
+  'component.globalHeader.search.example2': 'Örnek arama 2',
+  'component.globalHeader.search.example3': 'Örnek arama 3',
+  'component.globalHeader.help': 'Yardım',
+  'component.globalHeader.notification': 'Bildirim',
+  'component.globalHeader.notification.empty': 'Bütün bildirimleri görüntülediniz.',
+  'component.globalHeader.message': 'Mesaj',
+  'component.globalHeader.message.empty': 'Bütün mesajları görüntülediniz.',
+  'component.globalHeader.event': 'Event',
+  'component.globalHeader.event.empty': 'Bütün olayları görüntülediniz.',
+  'component.noticeIcon.clear': 'Temizle',
+  'component.noticeIcon.cleared': 'Temizlendi',
+  'component.noticeIcon.empty': 'Bildirim yok',
+  'component.noticeIcon.view-more': 'Daha fazla görüntüle',
+};

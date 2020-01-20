@@ -1,0 +1,10 @@
+@media only screen and (max-width: 996px) {
+  .demoGif {
+    margin-top: 2rem;
+    width: 100%;
+  }
+
+  .hideOnTabletAndSmaller {
+    display: none;
+  }
+}

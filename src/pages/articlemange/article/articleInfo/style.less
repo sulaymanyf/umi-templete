@@ -1,0 +1,155 @@
+@import '../../../../../node_modules/antd/es/style/themes/default.less';
+
+.main {
+  :global {
+    .ant-descriptions-row > td {
+      padding-bottom: 8px;
+    }
+
+    .ant-page-header-heading-extra {
+      flex-direction: column;
+    }
+  }
+}
+
+:global(.ant-pro-page-header-wrap-main .ant-pro-page-header-wrap-extraContent) {
+  min-width: 260px;
+  margin-left: 88px;
+  text-align: right;
+}
+
+.textOverflow() {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
+
+.headerList {
+  margin-bottom: 4px;
+
+  :global {
+    .ant-descriptions-row > td {
+      padding-bottom: 8px;
+    }
+  }
+
+  .stepDescription {
+    position: relative;
+    left: 38px;
+    padding-top: 8px;
+    font-size: 14px;
+    text-align: left;
+
+    > div {
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+  }
+}
+.close {
+  background: orange;
+  z-index: auto;
+  color: red;
+  border-radius: 12px;
+  line-height: 20px;
+  text-align: center;
+  height: 25px;
+  width: 25px;
+  font-size: 18px;
+  padding: 1px;
+  top: 60px;
+  right: 28px;
+  position: absolute;
+}
+/* use cross as close button */
+.close::before {
+  content: '\2716';
+}
+.projectList {
+  :global {
+    .ant-card-meta-description {
+      height: 44px;
+      overflow: hidden;
+      color: @text-color-secondary;
+      line-height: 22px;
+    }
+  }
+
+  .cardTitle {
+    font-size: 0;
+
+    a {
+      display: inline-block;
+      height: 24px;
+      margin-left: 12px;
+      color: @heading-color;
+      font-size: @font-size-base;
+      line-height: 24px;
+      vertical-align: top;
+
+      &:hover {
+        color: @primary-color;
+      }
+    }
+  }
+
+  .projectGrid {
+    width: 33.33%;
+  }
+
+  .projectItemContent {
+    display: flex;
+    height: 20px;
+    margin-top: 8px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    .textOverflow();
+
+    a {
+      display: inline-block;
+      flex: 1 1 0;
+      color: @text-color-secondary;
+      .textOverflow();
+
+      &:hover {
+        color: @primary-color;
+      }
+    }
+
+    .datetime {
+      flex: 0 0 auto;
+      float: right;
+      color: @disabled-color;
+    }
+  }
+}
+
+.pageHeader {
+  :global {
+    .ant-page-header-heading-extra > * + * {
+      margin-left: 8px;
+    }
+  }
+
+  .moreInfo {
+    //display: flex;
+    justify-content: space-between;
+    width: 260px;
+  }
+}
+
+@media screen and (max-width: @screen-sm) {
+  .stepDescription {
+    left: 8px;
+  }
+
+  .pageHeader {
+    :global {
+      .ant-pro-page-header-wrap-row {
+        flex-direction: column;
+      }
+    }
+  }
+}

@@ -1,22 +1,64 @@
-import {Form, Input, Select, Checkbox, Divider, Modal, Row, Col} from 'antd';
-import React, { Component ,Fragment} from 'react';
-import style from "./index.less";
+import { Form, Input, Select, Checkbox, Divider, Modal, TreeSelect, Col } from 'antd';
+import React, { Component, Fragment } from 'react';
+import style from './index.less';
+
+const { SHOW_PARENT } = TreeSelect;
 
 const { Option } = Select;
 const { TextArea } = Input;
 const {} = Checkbox;
-var  checkedVal =  [];
-var  currentVal=[];
-class RoleEditor extends Component {
+var checkedVal = [];
+var currentVal = [];
 
+class RoleEditor extends Component {
   state = {
+    defPermissionValue: [],
+    defMenuValue: [],
+  };
+
+  // setPermissionDef(defPermissionValue){
+  //   this.setState({
+  //     defPermissionValue
+  //   })
+  // }
+  // setMenuDef(defMenuValue){
+  //   this.setState({
+  //     defMenuValue
+  //   })
+  // }
+
+  componentWillReceiveProps() {
+    console.log('--------------------');
+    const { values, roles } = this.props;
+    const defPermissionValue = [];
+    for (let item in roles.permissionVOS) {
+      defPermissionValue.push(roles.permissionVOS[item].id);
+    }
+    // this.setPermissionDef(defPermissionValue)
+
+    const defMenuValue = [];
+    for (let item in roles.menuVOS) {
+      defMenuValue.push(roles.menuVOS[item].id);
+    }
+    this.setState({
+      defPermissionValue,
+      defMenuValue,
+    });
+  }
+  onPerChange = value => {
+    console.log('onChange ', value);
+    this.setState({ defPermissionValue: value });
+  };
+  onMenuChange = value => {
+    console.log('onChange ', value);
+    this.setState({ defMenuValue: value });
   };
 
   render() {
-    console.log("this.props",this.props)
-    const {values,roles} = this.props;
-    const {visible, onCancel, onCreate, form} = this.props;
-    const {getFieldDecorator} = form;
+    // console.log("this.props", this.props)
+    const { values, roles } = this.props;
+    const { visible, onCancel, onCreate, form } = this.props;
+    const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -27,41 +69,41 @@ class RoleEditor extends Component {
         sm: { span: 12 },
       },
     };
-    function getParent(id, aTree) {
-      var aParent = [];
-      for (var i in aTree) {
-        if (aTree[i].pid == id) {
-          aParent.push(aTree[i]);
-        }
-      }
-      return aParent;
-    }
+
+    // function getParent(id, aTree) {
+    //   var aParent = [];
+    //   for (var i in aTree) {
+    //     if (aTree[i].pid == id) {
+    //       aParent.push(aTree[i]);
+    //     }
+    //   }
+    //   return aParent;
+    // }
+
     function toTree(data) {
       // 删除 所有 children,以防止多次调用
-      if (data!==undefined){
-        data.forEach(function (item) {
+      if (data !== undefined) {
+        data.forEach(function(item) {
           delete item.children;
         });
       }
 
-
       // 将数据存储为 以 id 为 KEY 的 map 索引数据列
-      var map = {};
-      if (data!==undefined){
-        data.forEach(function (item) {
+      let map = {};
+      if (data !== undefined) {
+        data.forEach(function(item) {
           map[item.id] = item;
         });
       }
-
-//        console.log(map);
-      var val = [];
-      if (data!==undefined){
-        data.forEach(function (item) {
+      //        console.log(map);
+      let val = [];
+      if (data !== undefined) {
+        data.forEach(function(item) {
           // 以当前遍历项，的pid,去map对象中找到索引的id
-          var parent = map[item.pid];
+          let parent = map[item.pid];
           // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
           if (parent) {
-            (parent.children || ( parent.children = [] )).push(item);
+            (parent.children || (parent.children = [])).push(item);
           } else {
             //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
             val.push(item);
@@ -70,19 +112,65 @@ class RoleEditor extends Component {
       }
       return val;
     }
-    const permissionList = toTree(values.permissionVOS);
-    const plainOptions = [];
 
-    console.log("toTree",toTree(values.permissionVOS))
-    console.log("roles",roles)
-    const options = [
-      { label: 'Apple', value: 'Apple' },
-      { label: 'Pear', value: 'Pear' },
-      { label: 'Orange', value: 'Orange' },
-      { label: '但是', value: '打撒大' },
-      { label: '达式', value: '的撒' },
-    ];
-    console.log("values",values)
+    // console.log("roles", roles)
+    let newRoles = [];
+    if (values.permissionVOS !== undefined) {
+      newRoles = values.permissionVOS.map(iterator => {
+        return {
+          id: iterator.id,
+          pid: iterator.pid,
+          key: iterator.name,
+          title: iterator.name,
+          value: iterator.id,
+        };
+      });
+    }
+    let newMenus = [];
+    if (values.menuVOS !== undefined) {
+      newMenus = values.menuVOS.map(iterator => {
+        return {
+          id: iterator.id,
+          pid: iterator.pid,
+          key: iterator.name,
+          title: iterator.name,
+          value: iterator.id,
+        };
+      });
+    }
+
+    // console.log("newRoles", newMenus)
+    const newMenusList = toTree(newMenus);
+    const permissionList = toTree(newRoles);
+
+    // this.setMenuDef(defMenuValue)
+
+    // console.log("permissionList", permissionList)
+    // console.log("newRoles", newRoles)
+    //
+    // console.log("values", values)
+    const tProps = {
+      treeData: permissionList,
+      value: this.state.defPermissionValue,
+      onChange: this.onPerChange,
+      treeCheckable: true,
+      showCheckedStrategy: SHOW_PARENT,
+      searchPlaceholder: 'Please select',
+      style: {
+        width: '100%',
+      },
+    };
+    const tMenuProps = {
+      treeData: newMenusList,
+      value: this.state.defMenuValue,
+      onChange: this.onMenuChange,
+      treeCheckable: true,
+      showCheckedStrategy: SHOW_PARENT,
+      searchPlaceholder: 'Please select',
+      style: {
+        width: '100%',
+      },
+    };
     return (
       <Modal
         width={820}
@@ -92,7 +180,6 @@ class RoleEditor extends Component {
         key={values.id}
         onCancel={onCancel}
       >
-
         <Form {...formItemLayout}>
           <Form.Item
             labelCol={{
@@ -104,8 +191,8 @@ class RoleEditor extends Component {
             label="ID"
           >
             {getFieldDecorator('id', {
-              initialValue:values.id,
-            })(<Input placeholder="请输入"   readOnly={true}/>)}
+              initialValue: values.id,
+            })(<Input placeholder="请输入" readOnly={true} />)}
           </Form.Item>
 
           <Form.Item
@@ -118,8 +205,8 @@ class RoleEditor extends Component {
             label="角色名称"
           >
             {getFieldDecorator('roleName', {
-              initialValue:values.roleName,
-            })(<Input placeholder="请输入"   />)}
+              initialValue: values.roleName,
+            })(<Input placeholder="请输入" />)}
           </Form.Item>
           <Form.Item
             labelCol={{
@@ -131,8 +218,8 @@ class RoleEditor extends Component {
             label="角色描述"
           >
             {getFieldDecorator('description', {
-              initialValue:values.description,
-            })(<Input placeholder="请输入"   />)}
+              initialValue: values.description,
+            })(<Input placeholder="请输入" />)}
           </Form.Item>
           <Divider />
           {/*{this.props.list.map(tag => (*/}
@@ -146,82 +233,52 @@ class RoleEditor extends Component {
           {/*  </Tag>*/}
           {/*))}*/}
           <Form.Item label="拥有权限">
-            <div style={{ width: 760 }}>
-              {values && Object.keys(values).length ? (
-                permissionList.map(per => (
-                  <Fragment >
-                    <span >{per.name}:</span>
-                    <div  >
-                       <Checkbox.Group
-                         style={{ width: '100%' }}
-                         className={style.customTag}
-                         options={this.getValue(per)}
-                         defaultValue={this.defaultVal(per)}
-                         // defaultValue={["关键字搜素"]}
-                         onChange={this.onChange}
-                       >
-                         {/*{ per.children.map(item => (<Row>*/}
-                         {/*  <Col span={8}>*/}
-                         {/*    <Checkbox value={item.id}>{item.name}</Checkbox>*/}
-                         {/*  </Col>*/}
-                         {/*</Row>))}*/}
-                    </Checkbox.Group>
-                    </div>
-                  </Fragment>
-                ))) : null}
-              {/*<span style={{ marginRight: 8 }}>Categories:</span>*/}
-              {/*<Checkbox.Group*/}
-              {/*  options={plainOptions}*/}
-              {/*  defaultValue={['Apple']}*/}
-              {/*  onChange={this.onChange}*/}
-              {/*></Checkbox.Group>*/}
-            </div>
+            {getFieldDecorator('permissioon', {
+              initialValue: this.state.defPermissionValue,
+            })(<TreeSelect {...tProps} />)}
+
+            {/*<div style={{ width: 760 }}>*/}
+
+            {/*{values && Object.keys(values).length ? (*/}
+            {/*  permissionList.map(per => (*/}
+            {/*    <Fragment >*/}
+            {/*      <span >{per.name}:</span>*/}
+            {/*      <div  >*/}
+            {/*         <Checkbox.Group*/}
+            {/*           style={{ width: '100%' }}*/}
+            {/*           className={style.customTag}*/}
+            {/*           options={this.getValue(per)}*/}
+            {/*           defaultValue={this.defaultVal(per)}*/}
+            {/*           // defaultValue={["关键字搜素"]}*/}
+            {/*           onChange={this.onChange}*/}
+            {/*         >*/}
+            {/*           /!*{ per.children.map(item => (<Row>*!/*/}
+            {/*           /!*  <Col span={8}>*!/*/}
+            {/*           /!*    <Checkbox value={item.id}>{item.name}</Checkbox>*!/*/}
+            {/*           /!*  </Col>*!/*/}
+            {/*           /!*</Row>))}*!/*/}
+            {/*      </Checkbox.Group>*/}
+            {/*      </div>*/}
+            {/*    </Fragment>*/}
+            {/*  ))) : null}*/}
+            {/*<span style={{ marginRight: 8 }}>Categories:</span>*/}
+            {/*<Checkbox.Group*/}
+            {/*  options={plainOptions}*/}
+            {/*  defaultValue={['Apple']}*/}
+            {/*  onChange={this.onChange}*/}
+            {/*></Checkbox.Group>*/}
+            {/*</div>*/}
           </Form.Item>
           <Divider />
 
           <Form.Item label="拥有菜单">
-            <div style={{ width: 550 }}>
-              <span style={{ marginRight: 8 }}>Categories:</span>
-              <Checkbox.Group
-                options={plainOptions}
-                defaultValue={['Apple']}
-                onChange={this.onChange}
-              />
-            </div>
+            {getFieldDecorator('menu', {
+              initialValue: this.state.defMenuValue,
+            })(<TreeSelect {...tMenuProps} />)}
           </Form.Item>
-
         </Form>
       </Modal>
     );
-  }
-
-  getValue=(pre)=> {
-    const plainOptions = [];
-    for (let parentElement of  pre.children) {
-      plainOptions.push()
-      plainOptions.push({ label: parentElement.name, value: parentElement.id.toString() })
-    }
-    return plainOptions;
-  }
-
-
-
-  onChange=(checkedValues)=> {
-    for(var i in checkedValues){
-      currentVal.push(checkedValues[i]);
-    }
-    currentVal=checkedValues.filter(function(v){ return checkedVal.indexOf(v) > -1 })
-  }
-  defaultVal=(per)=> {
-    const defaultVal = [];
-    for (let parentElement of  per.children) {
-      defaultVal.push(parentElement.id)
-    }
-    for(var i in defaultVal){
-      checkedVal.push(defaultVal[i]);
-    }
-    checkedVal=[...new Set(checkedVal)]
-    return defaultVal;
   }
 }
 
