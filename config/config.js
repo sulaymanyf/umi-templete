@@ -140,6 +140,12 @@ export default {
               path: '/articlemange/taglist',
               component: './articlemange/tag',
             },
+            {
+              name: '文章类型',
+              icon: 'smile',
+              path: '/articlemange/articletip',
+              component: './articlemange/articleTip',
+            },
           ],
         },
         {
@@ -184,6 +190,7 @@ export default {
           path: '/menu',
           component: './menu',
         },
+
         {
           component: './404',
         },

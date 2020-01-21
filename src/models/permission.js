@@ -1,4 +1,4 @@
-import { query, getOne, getTree, getRoleList } from '@/services/permission';
+import { query, getOne, getTree, getRoleList, getAllList, saveRole } from '@/services/permission';
 import { notification } from 'antd';
 
 const PermissionModel = {
@@ -120,8 +120,15 @@ const PermissionModel = {
         payload: response,
       });
     },
-    *getRoles({ type, payload, callback }, { put, call, select }) {
-      const response = yield call(getRoleList, payload);
+    *saveRole({ type, payload }, { put, call, select }) {
+      const response = yield call(saveRole, payload);
+      yield put({
+        type: 'setRoleList',
+        payload: response,
+      });
+    },
+    *getAll({ type, payload, callback }, { put, call, select }) {
+      const response = yield call(getAllList, payload);
       if (response.flag === true) {
         console.log(response);
         console.log(typeof callback === 'function');

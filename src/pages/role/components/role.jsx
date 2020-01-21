@@ -9,16 +9,15 @@ const { CheckableTag } = Tag;
 class RoleTags extends Component {
   state = {
     selectedTags: [],
-    title:'',
+    title: '',
     tagsFromServer: [],
   };
 
   constructor(props) {
     super(props);
-    console.log('namelist', this.props.list);
     this.setState({
       tagsFromServer: this.props.list,
-      title:this.props.title
+      title: this.props.title,
     });
   }
 
@@ -46,7 +45,6 @@ class RoleTags extends Component {
             </Tag>
           ))}
         </div>
-
       </div>
     );
   }

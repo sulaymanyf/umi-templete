@@ -28,17 +28,16 @@ class RoleEditor extends Component {
   // }
 
   componentWillReceiveProps() {
-    console.log('--------------------');
-    const { values, roles } = this.props;
+    const { values } = this.props;
     const defPermissionValue = [];
-    for (let item in roles.permissionVOS) {
-      defPermissionValue.push(roles.permissionVOS[item].id);
+    for (let item in values.permissionVOS) {
+      defPermissionValue.push(values.permissionVOS[item].id);
     }
     // this.setPermissionDef(defPermissionValue)
 
     const defMenuValue = [];
-    for (let item in roles.menuVOS) {
-      defMenuValue.push(roles.menuVOS[item].id);
+    for (let item in values.menuVOS) {
+      defMenuValue.push(values.menuVOS[item].id);
     }
     this.setState({
       defPermissionValue,
@@ -46,17 +45,15 @@ class RoleEditor extends Component {
     });
   }
   onPerChange = value => {
-    console.log('onChange ', value);
     this.setState({ defPermissionValue: value });
   };
   onMenuChange = value => {
-    console.log('onChange ', value);
     this.setState({ defMenuValue: value });
   };
 
   render() {
     // console.log("this.props", this.props)
-    const { values, roles } = this.props;
+    const { values, roles, menus } = this.props;
     const { visible, onCancel, onCreate, form } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -70,6 +67,9 @@ class RoleEditor extends Component {
       },
     };
 
+    console.log('roles===================');
+    console.log('roles', roles);
+    console.log('roles===================');
     // function getParent(id, aTree) {
     //   var aParent = [];
     //   for (var i in aTree) {
@@ -115,8 +115,8 @@ class RoleEditor extends Component {
 
     // console.log("roles", roles)
     let newRoles = [];
-    if (values.permissionVOS !== undefined) {
-      newRoles = values.permissionVOS.map(iterator => {
+    if (roles !== undefined) {
+      newRoles = roles.map(iterator => {
         return {
           id: iterator.id,
           pid: iterator.pid,
@@ -127,8 +127,8 @@ class RoleEditor extends Component {
       });
     }
     let newMenus = [];
-    if (values.menuVOS !== undefined) {
-      newMenus = values.menuVOS.map(iterator => {
+    if (menus !== undefined) {
+      newMenus = menus.map(iterator => {
         return {
           id: iterator.id,
           pid: iterator.pid,
@@ -138,15 +138,16 @@ class RoleEditor extends Component {
         };
       });
     }
-
+    console.log('roles.menuVOS', roles);
+    console.log('roles.permissionVOS', menus);
     // console.log("newRoles", newMenus)
     const newMenusList = toTree(newMenus);
     const permissionList = toTree(newRoles);
 
     // this.setMenuDef(defMenuValue)
 
-    // console.log("permissionList", permissionList)
-    // console.log("newRoles", newRoles)
+    console.log('permissionList', permissionList);
+    console.log('newMenusList', newMenus);
     //
     // console.log("values", values)
     const tProps = {
@@ -205,8 +206,8 @@ class RoleEditor extends Component {
             label="角色名称"
           >
             {getFieldDecorator('roleName', {
-              initialValue: values.roleName,
-            })(<Input placeholder="请输入" />)}
+              initialValue: values.roleName == undefined ? null : values.roleName.split('_')[1],
+            })(<Input addonBefore="ROLE_" placeholder="请输入" />)}
           </Form.Item>
           <Form.Item
             labelCol={{
@@ -233,7 +234,7 @@ class RoleEditor extends Component {
           {/*  </Tag>*/}
           {/*))}*/}
           <Form.Item label="拥有权限">
-            {getFieldDecorator('permissioon', {
+            {getFieldDecorator('permissions', {
               initialValue: this.state.defPermissionValue,
             })(<TreeSelect {...tProps} />)}
 
@@ -272,7 +273,7 @@ class RoleEditor extends Component {
           <Divider />
 
           <Form.Item label="拥有菜单">
-            {getFieldDecorator('menu', {
+            {getFieldDecorator('menus', {
               initialValue: this.state.defMenuValue,
             })(<TreeSelect {...tMenuProps} />)}
           </Form.Item>

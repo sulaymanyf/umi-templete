@@ -14,7 +14,7 @@ export async function getMainMenu() {
   });
 }
 export async function getList() {
-  return request('api/cevir-kizar/menu/v1/menuList', {
+  return request('api/cevir-kizar/menu/v1/menu/List', {
     method: 'GET',
   });
 }

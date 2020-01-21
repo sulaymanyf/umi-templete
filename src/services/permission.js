@@ -29,3 +29,14 @@ export async function getRoleList(id) {
     method: 'GET',
   });
 }
+export async function getAllList() {
+  return request(`/api/ceviri-kizlar/permission/v1/permission/AllList`, {
+    method: 'GET',
+  });
+}
+export async function saveRole(params) {
+  return request(`/api/ceviri-kizlar/role/v1/role`, {
+    method: 'POST',
+    data: params,
+  });
+}

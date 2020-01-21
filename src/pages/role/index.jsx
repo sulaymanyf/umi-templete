@@ -10,7 +10,8 @@ class Role extends Component {
   state = {
     visible: false,
     fromValue: {},
-    roles: {},
+    roles: [],
+    menus: [],
     data: [],
   };
   //
@@ -27,32 +28,51 @@ class Role extends Component {
       visible: true,
     });
   };
-
-  EditorModal = obj => {
+  getPerAndMenu(obj) {
     const { dispatch } = this.props;
     dispatch({
-      type: 'permission/getRoles',
+      type: 'permission/getAll',
       payload: obj.id,
       callback: res => {
         if (res) {
-          console.log('res', res.data); // 请求完成后返回的结果
           this.setState({
-            roles: res.data[0],
+            roles: res.data,
           });
         }
       },
     });
+    dispatch({
+      type: 'menu/getAll',
+      payload: obj.id,
+      callback: res => {
+        if (res) {
+          this.setState({
+            menus: res.data,
+          });
+        }
+      },
+    });
+  }
+  EditorModal = obj => {
+    this.getPerAndMenu(obj);
     console.log('obj', obj);
     this.setState({
       visible: true,
       fromValue: obj,
     });
   };
+  handleAdd = obj => {
+    this.getPerAndMenu(obj);
+    console.log('obj', obj);
+    this.setState({
+      visible: true,
+      fromValue: {},
+    });
+  };
 
   onExpandedRowRender = (expanded, record) => {
     const permissionlist = expanded.permissionVOS;
     const menulist = expanded.menuVOS;
-    console.log(record);
     return (
       <Fragment>
         <Row>
@@ -86,7 +106,7 @@ class Role extends Component {
       console.log('Received values of form: ', values);
       const { dispatch } = this.props;
       dispatch({
-        type: 'menu/saveAndUpDate',
+        type: 'permission/saveRole',
         payload: values,
       });
 
@@ -106,8 +126,7 @@ class Role extends Component {
   };
   render() {
     const { roleList } = this.props.permission;
-    console.log(roleList);
-    console.log('this.state.visible', this.state.visible);
+    console.log('roleList', roleList);
     const columns = [
       { title: 'id', dataIndex: 'id', key: 'id' },
       { title: 'RoleName', dataIndex: 'roleName', key: 'roleName' },
@@ -139,6 +158,9 @@ class Role extends Component {
     return (
       <PageHeaderWrapper content="这是一个新页面，从这里进行开发！">
         <Card>
+          <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+            Add a Role
+          </Button>
           <Table
             columns={columns}
             // expandedRowRender={record => {children}}
@@ -153,6 +175,7 @@ class Role extends Component {
             onCreate={this.handleCreate}
             values={this.state.fromValue}
             roles={this.state.roles}
+            menus={this.state.menus}
           />
         </Card>
       </PageHeaderWrapper>

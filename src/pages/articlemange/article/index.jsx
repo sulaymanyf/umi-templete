@@ -4,12 +4,11 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import {connect} from 'dva';
-import {queryRule, updateRule, addRule, removeRule} from './service';
+import { connect } from 'dva';
+import { queryRule, updateRule, addRule, removeRule } from './service';
 import Link from 'umi/link';
-import {formatMessage, FormattedMessage} from 'umi-plugin-react/locale';
-import EditorForm from "@/pages/articlemange/article/components/EditorForm";
-
+import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
+import EditorForm from '@/pages/articlemange/article/components/EditorForm';
 
 /**
  * 添加节点
@@ -89,33 +88,30 @@ const handleRemove = async selectedRows => {
   }
 };
 
-
 //    NEW(1,"新增"),
 //     TRANSLATING(2,"翻译中"),
 //     UPDATE(3,"更新"),
 //     END(4,"结束");
-const TableList = ({metin, dispatch}) => {
-  console.log(metin)
-  console.log("metin")
+const TableList = ({ metin, dispatch }) => {
+  console.log(metin);
+  console.log('metin');
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const [formValues, setFormValues] = useState({});
-
+  const { records } = metin;
 
   const actionRef = useRef();
 
-  const getOneMetin =(id)=> {
-    console.log(id)
+  const getOneMetin = id => {
+    console.log(id);
     dispatch({
       type: 'metin/getMetin',
-      payload:id,
-    })
-      .then(res => {
-        console.log(res)
-
-      })
-  }
+      payload: id,
+    }).then(res => {
+      console.log(res);
+    });
+  };
 
   const columns = [
     {
@@ -175,37 +171,36 @@ const TableList = ({metin, dispatch}) => {
               setStepFormValues(record);
             }}
           >
-            {formatMessage({id: 'article.basic.incele',})}
+            {formatMessage({ id: 'article.basic.incele' })}
           </a>
-          <Divider type="vertical"/>
-          <Link to={`article/articleInfo?id=${record.id}`}>{formatMessage({id: 'article.basic.detail',})}</Link>
-          <Divider type="vertical"/>
+          <Divider type="vertical" />
+          <Link to={`article/articleInfo?id=${record.id}`}>
+            {formatMessage({ id: 'article.basic.detail' })}
+          </Link>
+          <Divider type="vertical" />
           <a
             onClick={() => {
               handleEditorModalVisible(true);
-              console.log(record)
+              console.log(record);
               setFormValues(record);
             }}
           >
-            {formatMessage({id: 'article.basic.update',})}
+            {formatMessage({ id: 'article.basic.update' })}
           </a>
         </>
       ),
     },
   ];
 
-
-
-
   return (
     <PageHeaderWrapper>
       <ProTable
-        headerTitle={formatMessage({id: 'article.basic.Inquiry-form',})}
+        headerTitle={formatMessage({ id: 'article.basic.Inquiry-form' })}
         // actionRef={actionRef}
         rowKey="key"
-        toolBarRender={(action, {selectedRows}) => [
+        toolBarRender={(action, { selectedRows }) => [
           <Button icon="plus" type="primary" onClick={() => handleModalVisible(true)}>
-            {formatMessage({id: 'article.basic.new',})}
+            {formatMessage({ id: 'article.basic.new' })}
           </Button>,
           // selectedRows && selectedRows.length > 0 && (
           //   <Dropdown
@@ -230,7 +225,7 @@ const TableList = ({metin, dispatch}) => {
           //   </Dropdown>
           // ),
         ]}
-        dataSource={metin.metins.data.records}
+        dataSource={records}
         // tableAlertRender={
         //   (selectedRowKeys, selectedRows) => (
         //   <div>
@@ -306,26 +301,27 @@ const TableList = ({metin, dispatch}) => {
         modalVisible={createModalVisible}
       />
       {formValues && Object.keys(formValues).length ? (
-      <EditorForm
-        onSubmit={async value => {
-          const success = await handleAdd(value);
-          if (success) {
-            handleEditorModalVisible(false);
+        <EditorForm
+          onSubmit={async value => {
+            const success = await handleAdd(value);
+            if (success) {
+              handleEditorModalVisible(false);
 
-            if (actionRef.current) {
-              actionRef.current.reload();
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }
-          }
-        }}
-        onCancel={() => {handleEditorModalVisible(false);
-          setFormValues({})
-        }}
-        editorModalVisible={editorModalVisible}
-        values={formValues}
-      /> ) : null}
+          }}
+          onCancel={() => {
+            handleEditorModalVisible(false);
+            setFormValues({});
+          }}
+          editorModalVisible={editorModalVisible}
+          values={formValues}
+        />
+      ) : null}
     </PageHeaderWrapper>
   );
 };
 
-
-export default connect(({metin}) => ({metin}))(TableList);
+export default connect(({ metin }) => ({ metin }))(TableList);
